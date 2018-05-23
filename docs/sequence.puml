@@ -1,0 +1,16 @@
+@startuml
+participant process_service as ps
+participant github as gh
+collections jenkins as j
+collections container_runtime_plattform as crp
+participant api_gateway as gw
+autonumber
+ps --> gh: create repository "api-name"
+ps --> gh: checkout repository, move into the folder, \n fill in template (nodejs with swagger-cli), \n fill in api spec, checkin push
+ps --> ps: validate that the swagger file includes all \n the information needed to create a mock.
+ps --> j: trigger mock deploy with "api-name"
+j --> gh: clone api repo
+j --> j: build the node project, \n build a docker container with a mock
+j --> crp: deploy it to a container runtime (requires template?)
+j --> gw: create a proxy on the apigee plattform with default slas, \n check for scopes? (should be part of the swagger file!), \n and a target as the new endpoint
+@enduml
