@@ -34,3 +34,62 @@ Feedback Schleifen zwischen Kunden & Anforderer
 ![Alt text](./assets/sequence.svg)
 
 
+# Calls
+
+1. Use [Github API](https://developer.github.com/v3/):
+```bash
+# https://developer.github.com/v3/repos/#create
+POST https://api.github.com/orgs/:org/repos
+{
+  "name": "api-name",
+  "description": "This is our api description",
+  "homepage": "http://api-portal.link.com",
+  "private": false,
+  "has_issues": true,
+  "has_projects": true,
+  "has_wiki": true
+}
+```
+1. ...
+
+```
+git clone https://github.com/:org/api-name.git
+cd api-name
+# get swagger file from s3
+# aws-cli: https://docs.aws.amazon.com/cli/latest/userguide/using-s3-commands.html
+# curl: https://gist.github.com/drfill/c18308b6d71ee8032efda870b9be348e
+https://stackoverflow.com/questions/30876123/script-to-download-file-from-amazon-s3-bucket
+# but cli is prefered
+
+#get node-cli
+# https://github.com/swagger-api/swagger-node
+npm init #?
+npm install -g swagger
+swagger project create api-name
+# https://github.com/swagger-api/swagger-node/blob/master/docs/mock-mode.md
+
+```
+
+
+
+start in swagger mock mode
+```
+swagger project start -m
+```
+
+
+? hosted version of swagger-node? for our customers
+
+
+could we let them provide the mock controllers?
+
+
+or use http://www.mock-server.com/ or some other tool used by (e.g. thoughtworks?)
+
+https://medium.com/@subeeshcbabu/swagmock-the-mock-data-generator-for-swagger-aka-openapi-f20e7e9e1b82
+
+
+deploy a swagger ui available externally (e.g. like our frontend)
+
+check if I can autogenerate a postman project... postman better then swagger ui? 
+https://github.com/swagger-api/swagger-node/issues/524
