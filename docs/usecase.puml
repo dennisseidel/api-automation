@@ -1,0 +1,28 @@
+@startuml
+|UI|
+start
+:user click: propose api;
+:user fill: form;
+:user upload: spec;
+|#AntiqueWhite|Validation Srv|
+:srv validate: specification;
+-> check result;
+if (valid) then
+|UI|
+:user: submit;
+|API Srv|
+:srv: save proposal;
+:setup environment;
+fork
+:create code repository + api spec + cipipeline;
+fork again
+:create doc repository from api spec;
+end fork
+: trigger cipipeline;
+: build and deploy dev + sandbox;
+: build and deploy docs;
+else
+|UI|
+:render errors;
+stop
+@enduml

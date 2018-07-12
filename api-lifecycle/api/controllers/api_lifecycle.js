@@ -11,6 +11,8 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
+var axios = require('axios');
+var cmd=require('node-cmd');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -35,11 +37,69 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function startApilifecycles(req, res) {
+  const githubtoken = process.env.GITHUB_TOKEN;
   const apiname = req.body.apiname;
 
   // create github project for api
-  
+  const request = {
+    "name": apiname,
+    "description": "d10l Identities Service documentation",
+    "homepage": "https://open.d10l.de/docs/identities",
+    "private": false,
+    "has_issues": true,
+    "has_projects": false,
+    "has_wiki": false
+  }
+  axios.post('https://api.github.com/orgs/d10l/repos', request, {
+    headers: { Authorization: "token " +  githubtoken }
+  }).then(
+    (response) => {
+      // Clone the git repository and install swagger-node, add the spec, validate(?) and upload to repo
+      const repourl = response.data.clone_url;
+      cmd.run(`
+        git clone https://github.com/d10l/api-template.git
+        cd api-template 
+        git remote set-url origin ${repourl} 
+        aws s3 cp s3://apispecs/apilifecycle.yaml src/api/swagger/swagger.yaml
+        git commit -a -m "add: api spec"
+        git push
+      `)
+      // create documentation and upload this to github page (alternative use widdershins to create markdown from swagger and 
+      // shins to transform this markdown to index.html (also styling possible))
+      cmd.run(`
+        mkdir api-template/docs
+        cd api-template/docs
+        node_modules/.bin/api2html -o index.html -l shell,javascript--nodejs,java ../src/api/swagger/swagger.yaml
+        git add .
+        git commit -am "docs: update api docs"
+        git push
+      `)
+      // create docker container and upload mock, besser trigger circleci pipeline
+      /* cmd.run(`
+        cd api-template/src
+        docker login -u ${env.DOCKER_USER} -p ${env.DOCKER_PW}
+        docker docker build -t ${apiname}-mock:1.0.0 .
+        aws ecr create-repository --repository-name ${apiname}
+        docker push 631047718510.dkr.ecr.eu-west-1.amazonaws.com/${apiname}-mock:1.0.0
+        # follow project in circleci https://circleci.com/docs/api/v1-reference/
+        curl -X POST https://circleci.com/api/v1.1/project/:vcs-type/:username/:project/follow?circle-token=:token
+      `) */
 
+      res.status(201).json(
+        {
+          "apiname": "SearchAPI19",
+          "owner": "dennis"
+        }
+      )
+    }
+  ).catch(
+    (error) => {
+      console.log(error);
+      res.status(400).json({
+        message: "An error occured."
+      })
+    }
+  )
+  
   // this sends back a JSON response which is a single string
-  res.json(name);
 }

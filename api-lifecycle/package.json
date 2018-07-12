@@ -8,8 +8,12 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
+    "api2html": "^0.1.0",
+    "axios": "^0.18.0",
     "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "node-cmd": "^3.0.0",
+    "swagger-express-mw": "^0.1.0",
+    "widdershins": "^3.6.0"
   },
   "devDependencies": {
     "should": "^7.1.0",

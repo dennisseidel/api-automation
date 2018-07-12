@@ -9,7 +9,7 @@ This repository includes all the assets that are needed to automate the API Proc
   1. Nodejs template including the swagger-ui files
   2. Add the "uploaded" swagger specification
   3. then commit
-3. Deploy a mock / sandbox api
+3. Deploy a mock / sandbox api (use aws fargate / https://www.learnaws.org/2018/02/06/Introduction-AWS-Fargate/ )
   1. build and deploy the api automatically based on the swagger spec (can that be done in nodejs otherwise use python) 
   2. create a apigee proxy for the api (sandard slas, ...)
 4. Create automatic documentation for the api with widashins
@@ -33,6 +33,13 @@ Feedback Schleifen zwischen Kunden & Anforderer
 
 ![Alt text](./assets/sequence.svg)
 
+
+# Prerequesit for running the service
+1. node installed
+2. swagger-node installed
+3. git installed
+4. access token for github in env variable
+5. aws cli + access token in env variable
 
 # Calls
 
@@ -93,3 +100,31 @@ deploy a swagger ui available externally (e.g. like our frontend)
 
 check if I can autogenerate a postman project... postman better then swagger ui? 
 https://github.com/swagger-api/swagger-node/issues/524
+
+upload swagger spec to an s3 bucket
+-> at runtime do it from the client in the browser
+for testing now use the cli
+aws s3 ls
+aws s3 ls s3://apispecs
+aws s3 cp api/swagger/swagger.yaml s3://apispecs/apilifecycle.yaml
+```
+download swagger spec from an s3 bucket
+```
+aws s3 cp s3://apispecs/apilifecycle.yaml swagger.yaml
+```
+
+
+docker build
+
+docker build -t api-name:1.0.0 .
+
+
+## Future Features 
+
+better mock options?
+http://stoplight.io/platform/prism/
+https://github.com/stoplightio/prism
+https://stackoverflow.com/questions/38344711/swagger-mock-server
+https://github.com/outofcoffee/imposter
+auto generate mock data?
+https://medium.com/@subeeshcbabu/swagmock-the-mock-data-generator-for-swagger-aka-openapi-f20e7e9e1b82
