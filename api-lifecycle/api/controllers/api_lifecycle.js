@@ -44,7 +44,7 @@ function startApilifecycles(req, res) {
   const request = {
     "name": apiname,
     "description": "d10l Identities Service documentation",
-    "homepage": "https://open.d10l.de/docs/identities",
+    "homepage": `https://d10l.github.io/${apiname}/`,
     "private": false,
     "has_issues": true,
     "has_projects": false,
@@ -69,7 +69,8 @@ function startApilifecycles(req, res) {
       cmd.run(`
         mkdir api-template/docs
         cd api-template/docs
-        node_modules/.bin/api2html -o index.html -l shell,javascript--nodejs,java ../src/api/swagger/swagger.yaml
+        ../../node_modules/.bin/api2html -o index.html -l shell,javascript--nodejs,java ../src/api/swagger/swagger.yaml
+        echo "theme: jekyll-theme-cayman" > _config.yml
         git add .
         git commit -am "docs: update api docs"
         git push
@@ -84,11 +85,15 @@ function startApilifecycles(req, res) {
         # follow project in circleci https://circleci.com/docs/api/v1-reference/
         curl -X POST https://circleci.com/api/v1.1/project/:vcs-type/:username/:project/follow?circle-token=:token
       `) */
-
+      cmd,run(`
+        rm -rf ./api-template
+      `)
       res.status(201).json(
         {
           "apiname": "SearchAPI19",
-          "owner": "dennis"
+          "owner": "dennis",
+          "git_repo": repourl,
+          "doc_url": `https://d10l.github.io/${apiname}/`
         }
       )
     }
