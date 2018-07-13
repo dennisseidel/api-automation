@@ -57,7 +57,6 @@ function startApilifecycles(req, res) {
       // Clone the git repository and install swagger-node, add the spec, validate(?) and upload to repo
       const repourl = response.data.clone_url;
       cmd.run(`
-        rm -rf ./api-template
         git clone https://github.com/d10l/api-template.git
         cd api-template 
         git remote set-url origin ${repourl} 
@@ -86,9 +85,6 @@ function startApilifecycles(req, res) {
         # follow project in circleci https://circleci.com/docs/api/v1-reference/
         curl -X POST https://circleci.com/api/v1.1/project/:vcs-type/:username/:project/follow?circle-token=:token
       `) */
-      cmd.run(`
-        rm -rf ./api-template
-      `)
       res.status(201).json(
         {
           "apiname": apiname,
