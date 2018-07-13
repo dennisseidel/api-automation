@@ -85,13 +85,13 @@ function startApilifecycles(req, res) {
         # follow project in circleci https://circleci.com/docs/api/v1-reference/
         curl -X POST https://circleci.com/api/v1.1/project/:vcs-type/:username/:project/follow?circle-token=:token
       `) */
-      cmd,run(`
+      cmd.run(`
         rm -rf ./api-template
       `)
       res.status(201).json(
         {
-          "apiname": "SearchAPI19",
-          "owner": "dennis",
+          "apiname": apiname,
+          "owner": req.body.owner,
           "git_repo": repourl,
           "doc_url": `https://d10l.github.io/${apiname}/`
         }
